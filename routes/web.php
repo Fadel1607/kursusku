@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 
 // Pertemuan 7: route home lewat controller
 Route::get('/', [HomeController::class, 'index'])
@@ -31,7 +32,7 @@ Route::post('/pendaftaran/preview', function (Request $request) {
         ->withInput();
 })->name('enrollments.preview');
 
-// Pertemuan 9: endpoint JSON dummy untuk Ajax
+// Pertemuan 9: endpoint JSON dummy untuk Ajax (tetap dipakai, belum diubah)
 Route::get('/courses/{course}/availability', function (int $course) {
     $availability = [
         1 => [
@@ -52,3 +53,6 @@ Route::get('/courses/{course}/availability', function (int $course) {
 
     return response()->json($availability[$course]);
 })->name('courses.availability');
+
+// Pertemuan 10: resource route CRUD Course (hari ini: index, create, store)
+Route::resource('courses', CourseController::class);

@@ -16,6 +16,9 @@
                     <a class="nav-link" href="{{ route('home') }}">Beranda</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('courses.index') }}">Kursus</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('enrollments.create') }}">
                         Pendaftaran
                     </a>
