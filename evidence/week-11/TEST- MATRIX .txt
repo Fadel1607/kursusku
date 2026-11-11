@@ -1,0 +1,115 @@
+TEST MATRIX - PERTEMUAN 11 (CRUD COURSE)
+Mata kuliah : Pemrograman Web III
+Proyek      : KursusKu (Laravel + MySQL)
+Nama        : Fadel Muhammad
+================================================================
+
+1. Duplicate code saat create
+   Input    : Kode = WEB-101 (sudah ada), field lain valid
+   Expected : Ditolak; error dekat field Kode
+   Actual   : Muncul "The code has already been taken." di bawah kolom Kode, data tidak masuk
+   Status   : 
+   Bukti    : 04-validation-duplicate-code.png
+
+2. Nama kosong
+   Input    : Nama dikosongkan
+   Expected : Ditolak; name required
+   Actual   : Muncul "The name field is required."
+   Status   : 
+   Bukti    : tm-02-nama-kosong.png
+
+3. Nama terlalu pendek
+   Input    : Nama = AI
+   Expected : Ditolak; minimal 3 karakter
+   Actual   : Muncul "The name field must be at least 3 characters."
+   Status   : 
+   Bukti    : tm-03-nama-pendek.png
+
+4. Fee negatif
+   Input    : Biaya = -1000
+   Expected : Ditolak; minimal 0
+   Actual   : Muncul "The fee field must be at least 0."
+   Status   : 
+   Bukti    : tm-04-fee-negatif.png
+
+5. Fee bukan integer
+   Input    : F12, ubah type input Biaya jadi text, isi abc
+   Expected : Ditolak; harus integer
+   Actual   : Muncul "The fee field must be an integer."
+   Status   : 
+   Bukti    : tm-05-fee-abc.png
+
+6. Quota nol
+   Input    : Kuota = 0
+   Expected : Ditolak
+   Actual   : Muncul "The quota field must be between 1 and 500."
+   Status   : 
+   Bukti    : tm-06-quota-0.png
+
+7. Quota 501
+   Input    : Kuota = 501
+   Expected : Ditolak
+   Actual   : Muncul "The quota field must be between 1 and 500."
+   Status   : 
+   Bukti    : 05-validation-quota-501.png
+
+8. Boundary quota minimum
+   Input    : Kuota = 1, kode baru
+   Expected : Diterima
+   Actual   : Data tersimpan dan tampil di daftar kursus
+   Status   : 
+   Bukti    : tm-08-quota-1.png
+
+9. Boundary quota maksimum
+   Input    : Kuota = 500, kode baru
+   Expected : Diterima
+   Actual   : Data tersimpan dan tampil di daftar kursus
+   Status   : 
+   Bukti    : tm-09-quota-500.png
+
+10. Tanggal invalid
+    Input    : F12, ubah type input Tanggal jadi text, isi abc
+    Expected : Ditolak oleh rule date
+    Actual   : Muncul "The start date field must be a valid date."
+    Status   : 
+    Bukti    : tm-10-tanggal-invalid.png
+
+11. Status invalid
+    Input    : F12, ubah value salah satu opsi Status jadi active, pilih opsi itu
+    Expected : Ditolak; hanya draft/open/closed
+    Actual   : Muncul "The selected status is invalid."
+    Status   : 
+    Bukti    : tm-11-status-invalid.png
+
+12. Update dengan code sendiri
+    Input    : Edit kursus, ubah nama saja, code tidak diubah
+    Expected : Harus berhasil
+    Actual   : Pindah ke detail, muncul "Kursus berhasil diperbarui.", nama baru tampil
+    Status   : 
+    Bukti    : 06-update-success.png
+
+13. Update ke code Course lain
+    Input    : Edit kursus, ganti code jadi PHP-101
+    Expected : Ditolak unique
+    Actual   : Muncul "The code has already been taken." di form edit
+    Status   : 
+    Bukti    : tm-13-update-code-duplikat.png
+
+14. Update normal
+    Input    : Ubah biaya / kuota / status dengan nilai valid
+    Expected : Berhasil; detail menampilkan data baru
+    Actual   : Halaman detail menampilkan nilai baru, data di MySQL ikut berubah
+    Status   : 
+    Bukti    : tm-14-update-normal.png
+
+15. Delete kursus dummy
+    Input    : Hapus DEL-001 (Cancel dulu, lalu OK)
+    Expected : Data hilang dari index + flash sukses
+    Actual   : Muncul "Kursus berhasil dihapus.", baris DEL-001 hilang dari tabel
+    Status   : 
+    Bukti    : 07-delete-success.png
+
+================================================================
+Total kasus : 15
+Pass        : 
+Fail        :
