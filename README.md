@@ -38,6 +38,7 @@ Platform pendaftaran kursus yang dikembangkan bertahap dari prototype PHP biasa 
    php artisan migrate
    php artisan db:seed --class=CourseSeeder
    php artisan db:seed --class=ParticipantSeeder
+   php artisan db:seed --class=CourseDummySeeder   (opsional, data uji pagination)
    ```
 6. Build aset frontend (Bootstrap dan jQuery):
    ```
@@ -72,25 +73,29 @@ Platform pendaftaran kursus yang dikembangkan bertahap dari prototype PHP biasa 
 - Laporan relasional `/enrollments`: participant, course, start date, status
 - Pengujian cascade delete dengan data dummy
 
+### Milestone 13 - Data Discovery
+- Search `q` (kode atau nama), filter status open/closed/draft, pagination 10 item per halaman dengan `withQueryString()`
+- Empty state untuk 0 hasil dan fallback tanpa JavaScript (form GET)
+- Opsional: partial view `courses/_results`, live search jQuery Ajax dengan debounce 300 ms, Ajax pagination
+- Dashboard ringkasan: total course, course open, participant, enrollment
+
 ## Struktur Singkat
 
 ```
-app/Http/Controllers/   HomeController, CourseController, EnrollmentController
+app/Http/Controllers/   HomeController, CourseController, EnrollmentController, DashboardController
 app/Http/Requests/      StoreCourseRequest, UpdateCourseRequest
 app/Models/             Course, Participant, Enrollment
 database/migrations/    courses, participants, enrollments
-database/seeders/       CourseSeeder, ParticipantSeeder
+database/seeders/       CourseSeeder, ParticipantSeeder, CourseDummySeeder
 resources/views/        layouts, partials, home, courses, enrollments
 routes/web.php          daftar route
-evidence/               bukti praktikum (week-07 sampai week-12)
+evidence/               bukti praktikum (week-07 sampai week-13)
 ```
 
 ## Belum Dikerjakan
 
-- Pagination dan pencarian
 - Update dan delete enrollment dari UI
 - Authentication
-- Ajax filter
 
 ## Catatan
 

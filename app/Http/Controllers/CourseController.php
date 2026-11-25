@@ -5,14 +5,38 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Models\Course;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index()
+    /**
+     * Daftar kursus dengan search (q), filter status, dan pagination 10 item.
+     * Satu query dipakai untuk halaman penuh dan untuk partial Ajax (?partial=1).
+     */
+    public function index(Request $request)
     {
-        $courses = Course::latest()->get();
+        $search = trim((string) $request->query('q'));
+        $status = trim((string) $request->query('status'));
+        $allowedStatuses = ['open', 'closed', 'draft'];
 
-        return view('courses.index', compact('courses'));
+        $courses = Course::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('code', 'like', "%{$search}%")
+                      ->orWhere('name', 'like', "%{$search}%");
+                });
+            })
+            ->when(in_array($status, $allowedStatuses, true),
+                fn ($query) => $query->where('status', $status))
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        if ($request->boolean('partial')) {
+            return view('courses._results', compact('courses'));
+        }
+
+        return view('courses.index', compact('courses', 'search', 'status'));
     }
 
     public function create()

@@ -16,65 +16,74 @@
 
     {{-- Pesan sukses sudah ditampilkan oleh layouts/app.blade.php --}}
 
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-striped align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Biaya</th>
-                            <th>Kuota</th>
-                            <th>Mulai</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @forelse ($courses as $course)
-                        <tr>
-                            <td>{{ $course->code }}</td>
-                            <td>{{ $course->name }}</td>
-                            <td>Rp {{ number_format($course->fee, 0, ',', '.') }}</td>
-                            <td>{{ $course->quota }}</td>
-                            <td>{{ $course->start_date->format('d/m/Y') }}</td>
-                            <td>{{ ucfirst($course->status) }}</td>
-                            <td>
-                                <div class="d-flex gap-1 flex-wrap">
-                                    <a href="{{ route('courses.show', $course) }}"
-                                       class="btn btn-sm btn-outline-primary">
-                                        Detail
-                                    </a>
-
-                                    <a href="{{ route('courses.edit', $course) }}"
-                                       class="btn btn-sm btn-outline-warning">
-                                        Edit
-                                    </a>
-
-                                    <form method="POST"
-                                          action="{{ route('courses.destroy', $course) }}"
-                                          onsubmit="return confirm('Hapus kursus ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">
-                                Belum ada data kursus.
-                            </td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
-            </div>
+    {{-- Form GET: berfungsi tanpa JavaScript (fallback). Tidak butuh @csrf. --}}
+    <form method="GET" action="{{ route('courses.index') }}" class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="search" id="live-search" name="q" value="{{ $search }}"
+                   class="form-control" placeholder="Cari kode atau nama kursus">
         </div>
-    </div>
+
+        <div class="col-md-3">
+            <select name="status" id="status-filter" class="form-select">
+                <option value="">Semua status</option>
+                <option value="open" @selected($status === 'open')>Open</option>
+                <option value="closed" @selected($status === 'closed')>Closed</option>
+                <option value="draft" @selected($status === 'draft')>Draft</option>
+            </select>
+        </div>
+
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Cari</button>
+            <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </form>
+
+    @include('courses._results')
 </div>
+
+{{--
+    OPSIONAL (Ajax live search, debounce 300 ms, Ajax pagination).
+    Hapus blok <script> ini kalau Ajax tidak dipakai; form GET di atas tetap berfungsi.
+    Dijalankan setelah DOMContentLoaded karena jQuery dimuat lewat Vite (module).
+--}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof window.$ === 'undefined') { return; }
+
+    var searchTimer;
+    var baseUrl = "{{ route('courses.index') }}";
+
+    function loadCourses(url) {
+        var q = $('#live-search').val();
+        var status = $('#status-filter').val();
+
+        $('#course-results').css('opacity', 0.5);
+
+        $.get(url || baseUrl, { q: q, status: status, partial: 1 })
+            .done(function (html) {
+                $('#course-results').replaceWith(html);
+            })
+            .fail(function () {
+                $('#course-results').css('opacity', 1);
+                console.error('Gagal memuat hasil course.');
+            });
+    }
+
+    $(document).on('input', '#live-search', function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () {
+            loadCourses();
+        }, 300);
+    });
+
+    $(document).on('change', '#status-filter', function () {
+        loadCourses();
+    });
+
+    $(document).on('click', '#course-results .pagination a', function (e) {
+        e.preventDefault();
+        loadCourses($(this).attr('href'));
+    });
+});
+</script>
 @endsection

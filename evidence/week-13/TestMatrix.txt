@@ -1,0 +1,6 @@
+No	Skenario	Langkah	Expected	Actual	Status
+1	0 hasil	Buka /courses?q=tidak-ada-xyz-999	Empty state tampil, tanpa error	Muncul "Tidak ada kursus yang sesuai pencarian/filter.", Total hasil 0	
+2	1 hasil	Buka /courses?q=Zebra	Tepat 1 Course tampil	Hanya "Kursus Zebra Unik" (DUM-25) yang tampil	
+3	Lebih dari 10 hasil	Buka /courses?status=open	Page 1 maksimal 10 data + pagination	Tabel 10 baris, link pagination muncul di bawah	
+4	Keyword dengan spasi	Cari Web Modern, klik Cari	Keyword terbaca benar	Kolom cari tetap berisi "Web Modern", tampil 3 kursus Web Modern	
+5	Filter + page 2	Pilih status Open, klik Cari, klik page 2	q/status tetap terjaga	URL berisi status=open&page=2, semua baris di page 2 berstatus Open
