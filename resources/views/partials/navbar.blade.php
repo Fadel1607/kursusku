@@ -11,7 +11,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">Beranda</a>
                 </li>
@@ -31,6 +31,20 @@
                         Laporan
                     </a>
                 </li>
+
+                @auth
+
+                    <li class="nav-item">
+                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>
+                        </form>
+                    </li>
+                @else
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-sm btn-outline-light" href="{{ route('login') }}">Login</a>
+                    </li>
+                @endauth
             </ul>
         </div>
     </div>
